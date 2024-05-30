@@ -10,7 +10,7 @@ COMMA_CAR_SEGMENTS_LFS_INSTANCE = os.environ.get("COMMA_CAR_SEGMENTS_LFS_INSTANC
 def get_comma_car_segments_database():
   from openpilot.selfdrive.car.fingerprints import MIGRATION
 
-  database = requests.get(get_repo_raw_url("database.json")).json()
+  database = requests.get(get_repo_raw_url("database.json"), timeout=60).json()
 
   ret = {}
   for platform in database:
@@ -54,7 +54,7 @@ def get_lfs_file_url(oid, size):
     "Content-Type": "application/vnd.git-lfs+json"
   }
 
-  response = requests.post(f"{COMMA_CAR_SEGMENTS_LFS_INSTANCE}.git/info/lfs/objects/batch", json=data, headers=headers)
+  response = requests.post(f"{COMMA_CAR_SEGMENTS_LFS_INSTANCE}.git/info/lfs/objects/batch", json=data, headers=headers, timeout=60)
 
   assert response.ok
 
@@ -71,11 +71,11 @@ def get_repo_raw_url(path):
 def get_repo_url(path):
   # Automatically switch to LFS if we are requesting a file that is stored in LFS
 
-  response = requests.head(get_repo_raw_url(path))
+  response = requests.head(get_repo_raw_url(path), timeout=60)
 
   if "text/plain" in response.headers.get("content-type"):
     # This is an LFS pointer, so download the raw data from lfs
-    response = requests.get(get_repo_raw_url(path))
+    response = requests.get(get_repo_raw_url(path), timeout=60)
     assert response.status_code == 200
     oid, size = parse_lfs_pointer(response.text)
 
