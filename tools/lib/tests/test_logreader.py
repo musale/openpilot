@@ -7,7 +7,6 @@ import tempfile
 import os
 import unittest
 import pytest
-import requests
 
 from parameterized import parameterized
 from unittest import mock
@@ -16,6 +15,7 @@ from cereal import log as capnp_log
 from openpilot.tools.lib.logreader import LogIterable, LogReader, comma_api_source, parse_indirect, ReadMode, InternalUnavailableException
 from openpilot.tools.lib.route import SegmentRange
 from openpilot.tools.lib.url_file import URLFileException
+from security import safe_requests
 
 NUM_SEGS = 17  # number of segments in the test route
 ALL_SEGS = list(range(NUM_SEGS))
@@ -94,7 +94,7 @@ class TestLogReader(unittest.TestCase):
     os.environ["FILEREADER_CACHE"] = "1" if cache_enabled else "0"
     qlog = tempfile.NamedTemporaryFile(mode='wb', delete=False)
 
-    with requests.get(QLOG_FILE, stream=True) as r:
+    with safe_requests.get(QLOG_FILE, stream=True) as r:
       with qlog as f:
         shutil.copyfileobj(r.raw, f)
 

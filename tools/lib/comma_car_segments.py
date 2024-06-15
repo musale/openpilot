@@ -1,5 +1,6 @@
 import os
 import requests
+from security import safe_requests
 
 
 # Forks with additional car support can fork the commaCarSegments repo on huggingface or host the LFS files themselves
@@ -10,7 +11,7 @@ COMMA_CAR_SEGMENTS_LFS_INSTANCE = os.environ.get("COMMA_CAR_SEGMENTS_LFS_INSTANC
 def get_comma_car_segments_database():
   from openpilot.selfdrive.car.fingerprints import MIGRATION
 
-  database = requests.get(get_repo_raw_url("database.json")).json()
+  database = safe_requests.get(get_repo_raw_url("database.json")).json()
 
   ret = {}
   for platform in database:
@@ -75,7 +76,7 @@ def get_repo_url(path):
 
   if "text/plain" in response.headers.get("content-type"):
     # This is an LFS pointer, so download the raw data from lfs
-    response = requests.get(get_repo_raw_url(path))
+    response = safe_requests.get(get_repo_raw_url(path))
     assert response.status_code == 200
     oid, size = parse_lfs_pointer(response.text)
 
