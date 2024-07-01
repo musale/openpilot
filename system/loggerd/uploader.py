@@ -3,7 +3,6 @@ import bz2
 import io
 import json
 import os
-import random
 import requests
 import threading
 import time
@@ -20,6 +19,7 @@ from openpilot.common.realtime import set_core_affinity
 from openpilot.system.hardware.hw import Paths
 from openpilot.system.loggerd.xattr_cache import getxattr, setxattr
 from openpilot.common.swaglog import cloudlog
+import secrets
 
 NetworkType = log.DeviceState.NetworkType
 UPLOAD_ATTR_NAME = 'user.upload'
@@ -264,7 +264,7 @@ def main(exit_event: threading.Event = None) -> None:
       cloudlog.info("upload backoff %r", backoff)
       backoff = min(backoff*2, 120)
     if allow_sleep:
-      time.sleep(backoff + random.uniform(0, backoff))
+      time.sleep(backoff + secrets.SystemRandom().uniform(0, backoff))
 
 
 if __name__ == "__main__":

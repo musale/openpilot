@@ -1,5 +1,4 @@
 import os
-import random
 import unittest
 from pathlib import Path
 
@@ -9,6 +8,7 @@ import openpilot.system.loggerd.uploader as uploader
 from openpilot.common.params import Params
 from openpilot.system.hardware.hw import Paths
 from openpilot.system.loggerd.xattr_cache import setxattr
+import secrets
 
 
 def create_random_file(file_path: Path, size_mb: float, lock: bool = False, upload_xattr: bytes = None) -> None:
@@ -71,7 +71,7 @@ class UploaderTestCase(unittest.TestCase):
     uploader.fake_upload = True
     uploader.force_wifi = True
     uploader.allow_sleep = False
-    self.seg_num = random.randint(1, 300)
+    self.seg_num = secrets.SystemRandom().randint(1, 300)
     self.seg_format = "00000004--0ac3964c96--{}"
     self.seg_format2 = "00000005--4c4e99b08b--{}"
     self.seg_dir = self.seg_format.format(self.seg_num)

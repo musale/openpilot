@@ -8,7 +8,6 @@ import io
 import json
 import os
 import queue
-import random
 import select
 import socket
 import sys
@@ -39,6 +38,7 @@ from openpilot.system.loggerd.xattr_cache import getxattr, setxattr
 from openpilot.common.swaglog import cloudlog
 from openpilot.system.version import get_build_metadata
 from openpilot.system.hardware.hw import Paths
+import secrets
 
 
 ATHENA_HOST = os.getenv('ATHENA_HOST', 'wss://athena.comma.ai')
@@ -765,7 +765,7 @@ def ws_manage(ws: WebSocket, end_event: threading.Event) -> None:
 
 
 def backoff(retries: int) -> int:
-  return random.randrange(0, min(128, int(2 ** retries)))
+  return secrets.SystemRandom().randrange(0, min(128, int(2 ** retries)))
 
 
 def main(exit_event: threading.Event = None):
