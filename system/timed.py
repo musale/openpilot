@@ -12,6 +12,7 @@ from openpilot.common.time import system_time_valid
 from openpilot.common.params import Params
 from openpilot.common.swaglog import cloudlog
 from openpilot.system.hardware import AGNOS
+from security import safe_command
 
 
 def set_timezone(timezone):
@@ -41,7 +42,7 @@ def set_time(new_time):
 
   cloudlog.debug(f"Setting time to {new_time}")
   try:
-    subprocess.run(f"TZ=UTC date -s '{new_time}'", shell=True, check=True)
+    safe_command.run(subprocess.run, f"TZ=UTC date -s '{new_time}'", shell=True, check=True)
   except subprocess.CalledProcessError:
     cloudlog.exception("timed.failed_setting_time")
 

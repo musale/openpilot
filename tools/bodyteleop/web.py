@@ -14,6 +14,7 @@ from aiohttp import ClientSession
 from openpilot.common.basedir import BASEDIR
 from openpilot.system.webrtc.webrtcd import StreamRequestBody
 from openpilot.common.params import Params
+from security import safe_command
 
 logger = logging.getLogger("bodyteleop")
 logging.basicConfig(level=logging.INFO)
@@ -54,7 +55,7 @@ async def play_sound(sound: str):
 ## SSL
 def create_ssl_cert(cert_path: str, key_path: str):
   try:
-    proc = subprocess.run(f'openssl req -x509 -newkey rsa:4096 -nodes -out {cert_path} -keyout {key_path} \
+    proc = safe_command.run(subprocess.run, f'openssl req -x509 -newkey rsa:4096 -nodes -out {cert_path} -keyout {key_path} \
                           -days 365 -subj "/C=US/ST=California/O=commaai/OU=comma body"',
                           capture_output=True, shell=True)
     proc.check_returncode()

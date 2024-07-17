@@ -27,6 +27,7 @@ from openpilot.system.qcomgpsd.structs import (dict_unpacker, position_report, r
                                               LOG_GNSS_GPS_MEASUREMENT_REPORT, LOG_GNSS_GLONASS_MEASUREMENT_REPORT,
                                               LOG_GNSS_POSITION_REPORT, LOG_GNSS_OEMDRE_MEASUREMENT_REPORT,
                                               LOG_GNSS_OEMDRE_SVPOLY_REPORT)
+from security import safe_command
 
 DEBUG = int(os.getenv("DEBUG", "0"))==1
 ASSIST_DATA_FILE = '/tmp/xtra3grc.bin'
@@ -208,7 +209,7 @@ def teardown_quectel(diag):
 def wait_for_modem(cmd="AT+QGPS?"):
   cloudlog.warning("waiting for modem to come up")
   while True:
-    ret = subprocess.call(f"mmcli -m any --timeout 10 --command=\"{cmd}\"", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
+    ret = safe_command.run(subprocess.call, f"mmcli -m any --timeout 10 --command=\"{cmd}\"", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
     if ret == 0:
       return
     time.sleep(0.1)

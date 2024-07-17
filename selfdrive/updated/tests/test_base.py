@@ -15,10 +15,11 @@ from openpilot.selfdrive.manager.process import ManagerProcess
 
 from openpilot.selfdrive.test.helpers import processes_context
 from openpilot.common.params import Params
+from security import safe_command
 
 
 def run(args, **kwargs):
-  return subprocess.run(args, **kwargs, check=True)
+  return safe_command.run(subprocess.run, args, **kwargs, check=True)
 
 
 def update_release(directory, name, version, agnos_version, release_notes):
