@@ -94,7 +94,7 @@ class TestLogReader(unittest.TestCase):
     os.environ["FILEREADER_CACHE"] = "1" if cache_enabled else "0"
     qlog = tempfile.NamedTemporaryFile(mode='wb', delete=False)
 
-    with requests.get(QLOG_FILE, stream=True) as r:
+    with requests.get(QLOG_FILE, stream=True, timeout=60) as r:
       with qlog as f:
         shutil.copyfileobj(r.raw, f)
 
